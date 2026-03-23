@@ -1,3 +1,3 @@
 # API Contract Diagram
 
-![API Contract Diagram](images/API contract diagram.png)
+![API Contract Diagram](images/API%20contract%20diagram.png)
