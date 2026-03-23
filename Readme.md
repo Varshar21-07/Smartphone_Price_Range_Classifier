@@ -1,14 +1,16 @@
 # Smartphone Price Range Classifier
 
-This project predicts smartphone price range using an Artificial Neural Network (ANN) based on specifications like RAM, battery, camera, and storage.
+This project predicts smartphone price- [High-Level Design (HLD)](hld_diagram.md)
+
+- [Low-Level Design (LLD)](lld_diagram.md)
+- [Database Entity Relationship Diagram (ERD)](database_erd.md)
+- [API Contract Diagram](api_contract.md)
 
 ## User Flow
 
 Below diagram shows how the user interacts with the system.
 
 ![User Flow](images/user_flow.png)
-
-
 
 ## Project Wireframe
 
