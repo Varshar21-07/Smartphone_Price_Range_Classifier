@@ -11,7 +11,6 @@ To view the detailed technical diagrams, click the links below:
 - [Database Entity Relationship Diagram (ERD)](database_erd.md)
 - [API Contract Diagram](api_contract.md)
 
-
 ## User Flow
 
 Below diagram shows how the user interacts with the system.
