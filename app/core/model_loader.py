@@ -12,14 +12,19 @@ class SmartphoneModel:
         self._load_model()
 
     def _load_model(self):
-        """Loads the Keras ANN model from disk."""
+        """Loads the Keras ANN model from disk, supporting both .keras and .h5."""
+        h5_path = os.path.join(MODEL_DIR, "ann_model.h5")
+        keras_path = os.path.join(MODEL_DIR, "ann_model.keras")
+        
+        target_path = h5_path if os.path.exists(h5_path) else keras_path
+
         try:
-            if os.path.exists(MODEL_PATH):
+            if os.path.exists(target_path):
                 # Using compile=False as we only need the model for inference
-                self.model = tf.keras.models.load_model(MODEL_PATH, compile=False)
-                print(f"✅ Model loaded successfully from {MODEL_PATH}")
+                self.model = tf.keras.models.load_model(target_path, compile=False)
+                print(f"✅ Model loaded successfully from {target_path}")
             else:
-                print(f"⚠️ Model file not found at {MODEL_PATH}")
+                print(f"⚠️ Model file not found at {target_path}")
         except Exception as e:
             print(f"❌ Error loading model: {str(e)}")
 
