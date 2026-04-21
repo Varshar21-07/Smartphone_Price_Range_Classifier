@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Predict from './pages/Predict';
 import Result from './pages/Result';
 import Admin from './pages/Admin';
+import BatchPredict from './pages/BatchPredict';
 import { predictSingle, getMetrics } from './services/api';
 
 function App() {
@@ -46,9 +47,11 @@ function App() {
   const renderPage = () => {
     switch (page) {
       case 'landing':
-        return <Home onStart={() => setPage('predict')} />;
+        return <Home onStart={() => setPage('predict')} onBatch={() => setPage('batch')} />;
       case 'predict':
         return <Predict onPredict={handlePredict} isLoading={loading} />;
+      case 'batch':
+        return <BatchPredict onGoHome={() => setPage('landing')} />;
       case 'result':
         return (
           <Result 
@@ -61,7 +64,7 @@ function App() {
       case 'admin':
         return <Admin metrics={metrics} />;
       default:
-        return <Home onStart={() => setPage('predict')} />;
+        return <Home onStart={() => setPage('predict')} onBatch={() => setPage('batch')} />;
     }
   };
 

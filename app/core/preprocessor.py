@@ -1,4 +1,5 @@
 import numpy as np
+
 import pandas as pd
 import pickle
 import os
@@ -28,11 +29,6 @@ class SmartphonePreprocessor:
     def transform(self, data: dict) -> np.ndarray:
         """
         Main pipeline to transform raw input into model-ready features.
-        Steps:
-        1. Feature Engineering (Pixel Density, Screen Area)
-        2. Log Transformation for skewed features
-        3. Feature Selection (Dropping less important features)
-        4. Scaling (StandardScaler)
         """
         # Convert dict to DataFrame for easier manipulation
         df = pd.DataFrame([data])
@@ -43,7 +39,8 @@ class SmartphonePreprocessor:
         # Pixel density approximation
         df['pixel_density'] = np.sqrt(df['px_height']**2 + df['px_width']**2) / (np.sqrt(df['sc_h']**2 + df['sc_w']**2) + 1)
 
-        # 1.1 RAM Binning (Required by the trained model)
+
+        # 1.1 RAM Binning
         df['ram_category'] = pd.cut(
             df['ram'],
             bins=[0, 1000, 2000, 3000, 4000],
@@ -57,7 +54,7 @@ class SmartphonePreprocessor:
         for col in skewed_features:
             df[col] = np.log1p(df[col])
 
-        # 3. Drop Features (Matches Notebook Step 13/14)
+        # 3. Drop Features
         if self.dropped_features:
             df = df.drop(columns=self.dropped_features, errors='ignore')
 
@@ -67,12 +64,7 @@ class SmartphonePreprocessor:
 
         # 5. Scaling
         if self.scaler:
-            # Note: Binary features (dual_sim, four_g, etc.) were NOT scaled during training.
-            # We must only scale the continuous features to avoid 'unseen feature names' error.
-            binary_cols = ['blue', 'dual_sim', 'four_g', 'three_g', 'wifi', 'ram_category']
-            continuous_cols = [c for c in df.columns if c not in binary_cols]
-            
-            # Apply scaling only to continuous columns
-            df[continuous_cols] = self.scaler.transform(df[continuous_cols])
+            # According to fe_config.pkl, scale_all is True for this new model
+            df[df.columns] = self.scaler.transform(df[df.columns])
             
         return df.values

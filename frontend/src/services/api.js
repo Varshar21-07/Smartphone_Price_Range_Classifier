@@ -23,6 +23,7 @@ export const predictSingle = async (specs) => {
     ram: parseInt(specs.ram),
     sc_h: parseInt(specs.sc_h),
     sc_w: parseInt(specs.sc_w),
+    talk_time: parseInt(specs.talk_time),
   };
 
   try {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Smartphone, Battery, Camera, Layers, Cpu, ShieldCheck, Info, Wifi, Monitor, Scale, Clock, Phone } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 import SpecInput from '../components/SpecInput';
@@ -47,6 +48,7 @@ const Predict = ({ onPredict, isLoading }) => {
     ram: '',
     sc_h: '',
     sc_w: '',
+    talk_time: '',
   });
 
   const handleChange = (e) => {
@@ -77,24 +79,47 @@ const Predict = ({ onPredict, isLoading }) => {
         <form onSubmit={handleSubmit} className="w-full space-y-8">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <SpecInput label="RAM" icon={Smartphone} unit="MB" name="ram" placeholder="e.g. 2048" value={specs.ram} onChange={handleChange} type="number" required />
-            <SpecInput label="Battery" icon={Battery} unit="mAh" name="battery_power" placeholder="e.g. 5000" value={specs.battery_power} onChange={handleChange} type="number" required />
-            <SpecInput label="Internal Storage" icon={Layers} unit="GB" name="int_memory" placeholder="e.g. 128" value={specs.int_memory} onChange={handleChange} type="number" required />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <SpecInput label="RAM" icon={Smartphone} unit="MB" name="ram" placeholder="e.g. 2048" value={specs.ram} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+              <SpecInput label="Battery" icon={Battery} unit="mAh" name="battery_power" placeholder="e.g. 5000" value={specs.battery_power} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <SpecInput label="Internal Storage" icon={Layers} unit="GB" name="int_memory" placeholder="e.g. 128" value={specs.int_memory} onChange={handleChange} type="number" required />
+            </motion.div>
             
-            <SpecInput label="Primary Camera" icon={Camera} unit="MP" name="pc" placeholder="e.g. 64" value={specs.pc} onChange={handleChange} type="number" required />
-            <SpecInput label="Front Camera" icon={Camera} unit="MP" name="fc" placeholder="e.g. 16" value={specs.fc} onChange={handleChange} type="number" required />
-            <SpecInput label="Weight" icon={Scale} unit="g" name="mobile_wt" placeholder="e.g. 180" value={specs.mobile_wt} onChange={handleChange} type="number" required />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+              <SpecInput label="Primary Camera" icon={Camera} unit="MP" name="pc" placeholder="e.g. 64" value={specs.pc} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+              <SpecInput label="Front Camera" icon={Camera} unit="MP" name="fc" placeholder="e.g. 16" value={specs.fc} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+              <SpecInput label="Weight" icon={Scale} unit="g" name="mobile_wt" placeholder="e.g. 180" value={specs.mobile_wt} onChange={handleChange} type="number" required />
+            </motion.div>
             
-            <SpecInput label="Resolution Height" icon={Monitor} unit="px" name="px_height" placeholder="e.g. 1920" value={specs.px_height} onChange={handleChange} type="number" required />
-            <SpecInput label="Resolution Width" icon={Monitor} unit="px" name="px_width" placeholder="e.g. 1080" value={specs.px_width} onChange={handleChange} type="number" required />
-            <SpecInput label="Screen Height" icon={Smartphone} unit="cm" name="sc_h" placeholder="e.g. 15" value={specs.sc_h} onChange={handleChange} type="number" required />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+              <SpecInput label="Resolution Height" icon={Monitor} unit="px" name="px_height" placeholder="e.g. 1920" value={specs.px_height} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
+              <SpecInput label="Resolution Width" icon={Monitor} unit="px" name="px_width" placeholder="e.g. 1080" value={specs.px_width} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+              <SpecInput label="Screen Height" icon={Smartphone} unit="cm" name="sc_h" placeholder="e.g. 15" value={specs.sc_h} onChange={handleChange} type="number" required />
+            </motion.div>
             
-            <SpecInput label="Screen Width" icon={Smartphone} unit="cm" name="sc_w" placeholder="e.g. 7" value={specs.sc_w} onChange={handleChange} type="number" required />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+              <SpecInput label="Screen Width" icon={Smartphone} unit="cm" name="sc_w" placeholder="e.g. 7" value={specs.sc_w} onChange={handleChange} type="number" required />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+              <SpecInput label="Talk Time" icon={Clock} unit="h" name="talk_time" placeholder="e.g. 20" value={specs.talk_time} onChange={handleChange} type="number" required />
+            </motion.div>
             
-            <div className="flex flex-col gap-6">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }} className="flex flex-col gap-6">
                <SpecSelect label="Dual SIM" icon={Phone} name="dual_sim" value={specs.dual_sim} onChange={handleChange} required />
                <SpecSelect label="4G Support" icon={Wifi} name="four_g" value={specs.four_g} onChange={handleChange} required />
-            </div>
+            </motion.div>
           </div>
 
           <div className="pt-6 border-t border-slate-100 dark:border-white/10 flex flex-col items-center">

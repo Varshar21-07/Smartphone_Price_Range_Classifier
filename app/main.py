@@ -1,3 +1,4 @@
+# Start of API file
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 import pandas as pd
@@ -14,6 +15,17 @@ app = FastAPI(
     description="High-performance API for smartphone price range prediction using ANN.",
     version="1.0.0"
 )
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Initialize Core components (Load once)
 preprocessor = SmartphonePreprocessor()

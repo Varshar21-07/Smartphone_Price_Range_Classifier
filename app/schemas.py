@@ -19,7 +19,6 @@ class SmartphoneSpecs(BaseModel):
     sc_h: int = Field(..., example=9)
     sc_w: int = Field(..., example=7)
     talk_time: int = Field(..., example=19)
-    three_g: int = Field(..., example=0)
 
 class PredictionResponse(BaseModel):
     """
