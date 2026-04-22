@@ -1,42 +1,41 @@
-import tensorflow as tf
 import os
 import numpy as np
 
 # Paths to artifacts (relative to the app directory)
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "assets", "model")
-MODEL_PATH = os.path.join(MODEL_DIR, "ann_model.keras")
 
 class SmartphoneModel:
     def __init__(self):
         self.model = None
-        self._load_model()
 
-    def _load_model(self):
-        """Loads the Keras ANN model from disk, supporting both .keras and .h5."""
-        h5_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.h5"))
-        keras_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.keras"))
-        
-        # Prefer .h5 if it exists, as it's more compatible with Keras 2/TF 2.15 on Render
-        target_path = h5_path if os.path.exists(h5_path) else keras_path
+    def _lazy_load_model(self):
+        """Loads the Keras ANN model only when needed to optimize startup."""
+        if self.model is None:
+            import tensorflow as tf
+            h5_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.h5"))
+            keras_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.keras"))
+            
+            # Prefer .keras as requested for the new model session
+            target_path = keras_path if os.path.exists(keras_path) else h5_path
 
-        try:
-            if os.path.exists(target_path):
-                print(f"Loading model from {target_path}...")
-                self.model = tf.keras.models.load_model(target_path, compile=False)
-                print(f"✅ Model loaded successfully.")
-            else:
-                print(f"⚠️ Model file not found at {target_path}")
-        except Exception as e:
-            print(f"❌ Error loading model: {e}")
-            import traceback
-            traceback.print_exc()
-            self.model = None
+            try:
+                if os.path.exists(target_path):
+                    print(f"Loading model from {target_path}...")
+                    self.model = tf.keras.models.load_model(target_path, compile=False)
+                    print(f"✅ Model loaded successfully.")
+                else:
+                    print(f"⚠️ Model file not found at {target_path}")
+            except Exception as e:
+                print(f"❌ Error loading model: {e}")
+                import traceback
+                traceback.print_exc()
 
-    def predict(self, processed_data: np.ndarray) -> tuple:
+    def predict(self, processed_data):
         """
         Performs inference on processed data.
         Returns: (predicted_class, confidence)
         """
+        self._lazy_load_model()
         if self.model is None:
             print("❌ Prediction failed: Model not loaded.")
             return 0, 0.0

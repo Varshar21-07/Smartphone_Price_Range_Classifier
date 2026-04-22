@@ -32,11 +32,22 @@ app.add_middleware(
 )
 
 
-# Initialize Core components (Load once)
-preprocessor = SmartphonePreprocessor()
-model = SmartphoneModel()
+# Global placeholders for lazy loading
+_preprocessor = None
+_model = None
 
-# Create database tables (For dev purposes code-first approach)
+def get_components():
+    """Helper to lazy-load and cache components to ensure fast startup on Render."""
+    global _preprocessor, _model
+    if _preprocessor is None:
+        from app.core.preprocessor import SmartphonePreprocessor
+        _preprocessor = SmartphonePreprocessor()
+    if _model is None:
+        from app.core.model_loader import SmartphoneModel
+        _model = SmartphoneModel()
+    return _preprocessor, _model
+
+# Create database tables (at startup is fine as it's typically fast)
 models.Base.metadata.create_all(bind=session.engine)
 
 @app.get("/")
@@ -45,7 +56,8 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "healthy", "model_loaded": model.model is not None}
+    prep, mod = get_components()
+    return {"status": "healthy", "model_loaded": mod.model is not None}
 
 @app.post("/predict", response_model=schemas.PredictionResponse)
 async def predict_single(specs: schemas.SmartphoneSpecs, db: Session = Depends(session.get_db)):
@@ -54,12 +66,15 @@ async def predict_single(specs: schemas.SmartphoneSpecs, db: Session = Depends(s
     Stores the result in PostgreSQL for tracking.
     """
     try:
-        # 1. Preprocess
-        raw_data = specs.dict()
-        processed_data = preprocessor.transform(raw_data)
+        # 1. Get components
+        prep, mod = get_components()
         
-        # 2. Predict
-        predicted_class, confidence = model.predict(processed_data)
+        # 2. Preprocess
+        raw_data = specs.dict()
+        processed_data = prep.transform(raw_data)
+        
+        # 3. Predict
+        predicted_class, confidence = mod.predict(processed_data)
         
         # 3. Save to DB
         db_record = models.PredictionRecord(
@@ -89,6 +104,9 @@ async def predict_batch(file: UploadFile = File(...), db: Session = Depends(sess
         raise HTTPException(status_code=400, detail="Only CSV files are allowed.")
     
     try:
+        # 1. Get components
+        prep, mod = get_components()
+        
         contents = await file.read()
         df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
         
@@ -96,8 +114,8 @@ async def predict_batch(file: UploadFile = File(...), db: Session = Depends(sess
         for _, row in df.iterrows():
             # Matches the schema keys
             raw_data = row.to_dict()
-            processed_data = preprocessor.transform(raw_data)
-            predicted_class, confidence = model.predict(processed_data)
+            processed_data = prep.transform(raw_data)
+            predicted_class, confidence = mod.predict(processed_data)
             
             results.append({
                 "price_range": predicted_class,
