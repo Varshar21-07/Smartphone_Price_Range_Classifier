@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import pandas as pd
 import io
 
-from app.schemas import SmartphoneSpecs, PredictionResponse, BatchPredictionResponse
+import app.schemas as schemas
 from app.core.preprocessor import SmartphonePreprocessor
 from app.core.model_loader import SmartphoneModel
 from app.db import models, session
@@ -47,8 +47,8 @@ async def root():
 async def health():
     return {"status": "healthy", "model_loaded": model.model is not None}
 
-@app.post("/predict", response_model=PredictionResponse)
-async def predict_single(specs: SmartphoneSpecs, db: Session = Depends(session.get_db)):
+@app.post("/predict", response_model=schemas.PredictionResponse)
+async def predict_single(specs: schemas.SmartphoneSpecs, db: Session = Depends(session.get_db)):
     """
     Predict price range for a single smartphone spec.
     Stores the result in PostgreSQL for tracking.
@@ -80,7 +80,7 @@ async def predict_single(specs: SmartphoneSpecs, db: Session = Depends(session.g
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/predict-batch", response_model=BatchPredictionResponse)
+@app.post("/predict-batch", response_model=schemas.BatchPredictionResponse)
 async def predict_batch(file: UploadFile = File(...), db: Session = Depends(session.get_db)):
     """
     Upload a CSV file with multiple smartphone specs and get batch predictions.
