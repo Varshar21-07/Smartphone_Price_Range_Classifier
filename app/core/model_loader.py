@@ -16,6 +16,7 @@ class SmartphoneModel:
         h5_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.h5"))
         keras_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.keras"))
         
+        # Prefer .h5 if it exists, as it's more compatible with Keras 2/TF 2.15 on Render
         target_path = h5_path if os.path.exists(h5_path) else keras_path
 
         try:
