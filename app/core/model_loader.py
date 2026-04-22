@@ -21,18 +21,16 @@ class SmartphoneModel:
 
         try:
             if os.path.exists(target_path):
-                # Using compile=False as we only need the model for inference
+                print(f"Loading model from {target_path}...")
                 self.model = tf.keras.models.load_model(target_path, compile=False)
-                print(f"✅ Model loaded successfully from {target_path}")
+                print(f"✅ Model loaded successfully.")
             else:
                 print(f"⚠️ Model file not found at {target_path}")
-                # Log current directory to help debugging
-                print(f"Current working directory: {os.getcwd()}")
-                print(f"Looked in: {MODEL_DIR}")
         except Exception as e:
-            print(f"❌ Error loading model from {target_path}: {str(e)}")
+            print(f"❌ Error loading model: {e}")
             import traceback
             traceback.print_exc()
+            self.model = None
 
     def predict(self, processed_data: np.ndarray) -> tuple:
         """
@@ -40,19 +38,14 @@ class SmartphoneModel:
         Returns: (predicted_class, confidence)
         """
         if self.model is None:
-            print("⚠️ Prediction failed: Model is not loaded. Returning fallback.")
-            # Fallback for dev mode/missing model
+            print("❌ Prediction failed: Model not loaded.")
             return 0, 0.0
-
+            
         try:
-            # Perform prediction
-            predictions = self.model.predict(processed_data, verbose=0)
-            
-            # Get the class with the highest probability
-            predicted_class = int(np.argmax(predictions, axis=1)[0])
-            confidence = float(np.max(predictions, axis=1)[0])
-            
+            prediction = self.model.predict(processed_data, verbose=0)
+            predicted_class = int(np.argmax(prediction[0]))
+            confidence = float(np.max(prediction[0]))
             return predicted_class, confidence
         except Exception as e:
-            print(f"❌ Inference error: {str(e)}")
+            print(f"❌ Error during inference: {e}")
             return 0, 0.0

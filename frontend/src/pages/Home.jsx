@@ -3,7 +3,7 @@ import { Smartphone, ArrowRight, Cpu, Target, Layers, Info } from 'lucide-react'
 import GlassCard from '../components/GlassCard';
 import { getModelInfo } from '../services/api';
 
-const Home = ({ onStart, onBatch }) => {
+const Home = ({ onStart, onBatch, onMetrics }) => {
   const [modelInfo, setModelInfo] = useState(null);
 
   useEffect(() => {
