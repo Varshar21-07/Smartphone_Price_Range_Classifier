@@ -96,6 +96,21 @@ const BatchPredict = ({ onGoHome }) => {
              </h2>
           </div>
 
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 w-full">
+            {[0, 1, 2, 3].map(rangeIdx => {
+              const count = results.predictions.filter(p => p.price_range === rangeIdx).length;
+              return (
+                <div key={rangeIdx} className="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-4 flex flex-col items-center gap-1 shadow-sm">
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${ranges[rangeIdx]?.color || 'text-slate-400'}`}>
+                    {ranges[rangeIdx]?.label.split(' - ')[0] || 'Range'}
+                  </span>
+                  <span className="text-2xl font-black text-slate-900 dark:text-white font-outfit">{count}</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase">Samples</span>
+                </div>
+              );
+            })}
+          </div>
+
           <div className="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden mb-10 shadow-sm max-h-96 overflow-y-auto">
             <table className="w-full text-left border-collapse cursor-default">
               <thead className="bg-slate-50 dark:bg-slate-800/80 sticky top-0 z-10">

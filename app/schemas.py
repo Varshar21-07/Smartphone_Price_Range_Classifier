@@ -32,5 +32,22 @@ class BatchPredictionResponse(BaseModel):
     """
     Output schema for multiple predictions.
     """
-    predictions: List[PredictionResponse]
+    predictions: List[dict]
     total_processed: int
+
+class ModelInfoResponse(BaseModel):
+    """
+    Metadata about the current model.
+    """
+    name: str = "Smartphone ANN Classifier"
+    version: str = "1.0.0"
+    accuracy: float = 0.93
+    classes: List[str] = ["Budget", "Low-Mid", "Mid-High", "Premium"]
+
+class MetricsResponse(BaseModel):
+    """
+    System usage metrics.
+    """
+    total_predictions: int
+    distribution: dict
+    accuracy: float = 0.93

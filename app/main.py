@@ -123,22 +123,31 @@ async def predict_batch(file: UploadFile = File(...), db: Session = Depends(sess
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Batch processing error: {str(e)}")
 
-@app.get("/metrics")
+@app.get("/model-info", response_model=schemas.ModelInfoResponse)
+async def get_model_info():
+    """
+    Get metadata about the current model stored in assets.
+    """
+    return schemas.ModelInfoResponse()
+
+@app.get("/metrics", response_model=schemas.MetricsResponse)
 async def get_metrics(db: Session = Depends(session.get_db)):
     """
     Get basic distribution metrics from prediction history.
     """
     total = db.query(models.PredictionRecord).count()
     if total == 0:
-        return {"total_predictions": 0, "distribution": {}}
+        return schemas.MetricsResponse(total_predictions=0, distribution={})
     
-    # Simple distribution calc (Can be optimized with direct SQL group by)
+    # Simple distribution calc
     records = db.query(models.PredictionRecord).all()
     dist = {}
     for r in records:
-        dist[r.predicted_range] = dist.get(r.predicted_range, 0) + 1
+        # Convert to string keys for JSON compatibility if needed, 
+        # but schemas expects a dict which usually handles int keys or string keys
+        dist[str(r.predicted_range)] = dist.get(str(r.predicted_range), 0) + 1
         
-    return {
-        "total_predictions": total,
-        "distribution": dist
-    }
+    return schemas.MetricsResponse(
+        total_predictions=total,
+        distribution=dist
+    )

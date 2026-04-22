@@ -47,7 +47,13 @@ function App() {
   const renderPage = () => {
     switch (page) {
       case 'landing':
-        return <Home onStart={() => setPage('predict')} onBatch={() => setPage('batch')} />;
+        return (
+          <Home 
+            onStart={() => setPage('predict')} 
+            onBatch={() => setPage('batch')} 
+            onMetrics={() => setPage('admin')}
+          />
+        );
       case 'predict':
         return <Predict onPredict={handlePredict} isLoading={loading} />;
       case 'batch':
@@ -64,7 +70,13 @@ function App() {
       case 'admin':
         return <Admin metrics={metrics} />;
       default:
-        return <Home onStart={() => setPage('predict')} onBatch={() => setPage('batch')} />;
+        return (
+          <Home 
+            onStart={() => setPage('predict')} 
+            onBatch={() => setPage('batch')} 
+            onMetrics={() => setPage('admin')}
+          />
+        );
     }
   };
 

@@ -13,8 +13,8 @@ class SmartphoneModel:
 
     def _load_model(self):
         """Loads the Keras ANN model from disk, supporting both .keras and .h5."""
-        h5_path = os.path.join(MODEL_DIR, "ann_model.h5")
-        keras_path = os.path.join(MODEL_DIR, "ann_model.keras")
+        h5_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.h5"))
+        keras_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.keras"))
         
         target_path = h5_path if os.path.exists(h5_path) else keras_path
 
@@ -25,8 +25,13 @@ class SmartphoneModel:
                 print(f"✅ Model loaded successfully from {target_path}")
             else:
                 print(f"⚠️ Model file not found at {target_path}")
+                # Log current directory to help debugging
+                print(f"Current working directory: {os.getcwd()}")
+                print(f"Looked in: {MODEL_DIR}")
         except Exception as e:
-            print(f"❌ Error loading model: {str(e)}")
+            print(f"❌ Error loading model from {target_path}: {str(e)}")
+            import traceback
+            traceback.print_exc()
 
     def predict(self, processed_data: np.ndarray) -> tuple:
         """
@@ -34,14 +39,19 @@ class SmartphoneModel:
         Returns: (predicted_class, confidence)
         """
         if self.model is None:
+            print("⚠️ Prediction failed: Model is not loaded. Returning fallback.")
             # Fallback for dev mode/missing model
             return 0, 0.0
 
-        # Perform prediction
-        predictions = self.model.predict(processed_data, verbose=0)
-        
-        # Get the class with the highest probability
-        predicted_class = int(np.argmax(predictions, axis=1)[0])
-        confidence = float(np.max(predictions, axis=1)[0])
-        
-        return predicted_class, confidence
+        try:
+            # Perform prediction
+            predictions = self.model.predict(processed_data, verbose=0)
+            
+            # Get the class with the highest probability
+            predicted_class = int(np.argmax(predictions, axis=1)[0])
+            confidence = float(np.max(predictions, axis=1)[0])
+            
+            return predicted_class, confidence
+        except Exception as e:
+            print(f"❌ Inference error: {str(e)}")
+            return 0, 0.0

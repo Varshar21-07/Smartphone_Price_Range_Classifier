@@ -45,6 +45,16 @@ export const getMetrics = async () => {
   }
 };
 
+export const getModelInfo = async () => {
+  try {
+    const response = await api.get('/model-info');
+    return response.data;
+  } catch (error) {
+    console.error('Model Info API Error:', error);
+    return null;
+  }
+};
+
 export const predictBatch = async (file) => {
   const formData = new FormData();
   formData.append('file', file);

@@ -13,7 +13,7 @@ const Admin = ({ metrics }) => {
     );
   }
 
-  const { total_predictions, distribution } = metrics;
+  const { total_predictions, distribution, accuracy } = metrics;
   
   const calculatePercentage = (count) => {
     if (total_predictions === 0) return 0;
@@ -21,7 +21,7 @@ const Admin = ({ metrics }) => {
   };
 
   const getLabel = (range) => {
-    const labels = ["₹8,000 - ₹12,000", "₹12,000 - ₹15,000", "₹15,000 - ₹20,000", "₹20,000 - ₹25,000"];
+    const labels = ["Budget", "Low-Mid", "Mid-High", "Premium"];
     return labels[range] || `Class ${range}`;
   };
 
@@ -32,18 +32,30 @@ const Admin = ({ metrics }) => {
           <BarChart3 className="w-6 h-6 text-blue-500" />
         </div>
         <div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white font-outfit tracking-tight">System Analytics</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Prediction history and price segment distribution.</p>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white font-outfit tracking-tight">System Metrics</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Model performance and segment distribution analysis.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mb-6">
-        <GlassCard className="!p-8 bg-white/50 dark:bg-slate-900/50">
-          <div className="flex flex-col gap-2">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-black text-blue-500">Total Processed</span>
-            <span className="text-5xl font-black text-slate-900 dark:text-white font-outfit">{total_predictions}</span>
-          </div>
-        </GlassCard>
+        <div className="grid grid-cols-1 gap-6">
+            <GlassCard className="!p-8 bg-white/50 dark:bg-slate-900/50">
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] uppercase tracking-[0.2em] font-black text-blue-500">Model Accuracy</span>
+                <span className="text-5xl font-black text-slate-900 dark:text-white font-outfit">
+                    {(accuracy * 100).toFixed(0)}%
+                </span>
+                <span className="text-[10px] text-slate-400 font-bold uppercase">Training Validation</span>
+              </div>
+            </GlassCard>
+            <GlassCard className="!p-8 bg-white/50 dark:bg-slate-900/50">
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] uppercase tracking-[0.2em] font-black text-blue-500">Live Samples</span>
+                <span className="text-5xl font-black text-slate-900 dark:text-white font-outfit">{total_predictions}</span>
+                <span className="text-[10px] text-slate-400 font-bold uppercase">Total Processed</span>
+              </div>
+            </GlassCard>
+        </div>
         
         <GlassCard className="flex flex-col !p-8 bg-white/50 dark:bg-slate-900/50 justify-center">
             <h3 className="text-sm font-black text-slate-800 dark:text-white mb-6 uppercase tracking-widest flex items-center gap-2">
