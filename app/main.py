@@ -122,17 +122,8 @@ async def predict_batch(file: UploadFile = File(...), db: Session = Depends(sess
                 "confidence": confidence
             })
             
-            # Record individual prediction (Optional, can be batch saved for efficiency)
-            db_record = models.PredictionRecord(
-                battery_power=int(row.get('battery_power', 0)),
-                ram=int(row.get('ram', 0)),
-                int_memory=int(row.get('int_memory', 0)),
-                predicted_range=predicted_class,
-                confidence=confidence
-            )
-            db.add(db_record)
-            
-        db.commit()
+        # Do not record batch predictions individually to database to prevent unnecessary overhead
+        # db.commit() is intentionally left out for this endpoint
         
         return {
             "predictions": results,
