@@ -15,8 +15,9 @@ class SmartphoneModel:
             h5_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.h5"))
             keras_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.keras"))
             
-            # Prefer .keras as requested for the new model session
-            target_path = keras_path if os.path.exists(keras_path) else h5_path
+            # ALWAYS prefer .h5, as it is the patched Keras 2 natively compatible format
+            # This prevents silent deserialization errors on Render
+            target_path = h5_path if os.path.exists(h5_path) else keras_path
 
             try:
                 if os.path.exists(target_path):
