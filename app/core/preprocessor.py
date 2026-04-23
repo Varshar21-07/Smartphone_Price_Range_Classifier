@@ -13,12 +13,15 @@ class SmartphonePreprocessor:
             import os
             MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "assets", "model")
             scaler_path = os.path.join(MODEL_DIR, "scaler.pkl")
+            print(f"--- DEBUG: Scaler Loading ---")
+            print(f"Looking for Scaler at: {scaler_path} (Exists: {os.path.exists(scaler_path)})")
             try:
                 with open(scaler_path, "rb") as f:
                     self.scaler = pickle.load(f)
-                print("✅ Scaler loaded.")
+                print("✅ Scaler loaded successfully.")
             except Exception as e:
                 print(f"❌ Error loading scaler: {e}")
+            print(f"---------------------------")
 
     def transform(self, data: dict):
         """

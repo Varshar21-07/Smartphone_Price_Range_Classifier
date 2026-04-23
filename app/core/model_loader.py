@@ -12,24 +12,31 @@ class SmartphoneModel:
         """Loads the Keras ANN model only when needed to optimize startup."""
         if self.model is None:
             import tensorflow as tf
+            import sys
+            print(f"--- DEBUG: Model Loading ---")
+            print(f"Python Version: {sys.version}")
+            print(f"TF Version: {tf.__version__}")
+            
             h5_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.h5"))
             keras_path = os.path.abspath(os.path.join(MODEL_DIR, "ann_model.keras"))
             
-            # ALWAYS prefer .h5, as it is the patched Keras 2 natively compatible format
-            # This prevents silent deserialization errors on Render
+            print(f"Looking for H5 at: {h5_path} (Exists: {os.path.exists(h5_path)})")
+            print(f"Looking for Keras at: {keras_path} (Exists: {os.path.exists(keras_path)})")
+
             target_path = h5_path if os.path.exists(h5_path) else keras_path
 
             try:
                 if os.path.exists(target_path):
-                    print(f"Loading model from {target_path}...")
+                    print(f"Attempting to load model from: {target_path}...")
                     self.model = tf.keras.models.load_model(target_path, compile=False)
-                    print(f"✅ Model loaded successfully.")
+                    print(f"✅ Model loaded successfully from {target_path}")
                 else:
-                    print(f"⚠️ Model file not found at {target_path}")
+                    print(f"❌ Error: No model files found in {MODEL_DIR}")
             except Exception as e:
-                print(f"❌ Error loading model: {e}")
+                print(f"❌ Fatal Error loading model: {e}")
                 import traceback
                 traceback.print_exc()
+            print(f"---------------------------")
 
     def predict(self, processed_data):
         """
