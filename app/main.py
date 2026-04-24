@@ -110,20 +110,24 @@ async def predict_batch(file: UploadFile = File(...), db: Session = Depends(sess
         contents = await file.read()
         df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
         
+        # 2. Vectorized transformation
+        # We transform the entire DataFrame at once for efficiency
+        processed_data_batch = prep.transform_batch(df)
+        
+        # 3. Vectorized prediction
+        predictions_raw = mod.predict_batch(processed_data_batch)
+        
         results = []
-        for _, row in df.iterrows():
-            # Matches the schema keys
-            raw_data = row.to_dict()
-            processed_data = prep.transform(raw_data)
-            predicted_class, confidence = mod.predict(processed_data)
-            
+        for i in range(len(df)):
+            predicted_class, confidence = predictions_raw[i]
             results.append({
                 "price_range": predicted_class,
                 "confidence": confidence
             })
-            
-        # Do not record batch predictions individually to database to prevent unnecessary overhead
-        # db.commit() is intentionally left out for this endpoint
+        
+        # 4. Cleanup
+        import gc
+        gc.collect()
         
         return {
             "predictions": results,

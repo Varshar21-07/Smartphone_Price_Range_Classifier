@@ -17,6 +17,8 @@ class SmartphonePreprocessor:
                 with open(scaler_path, "rb") as f:
                     self.scaler = pickle.load(f)
                 print("✅ Scaler loaded.")
+                import gc
+                gc.collect()
             except Exception as e:
                 print(f"❌ Error loading scaler: {e}")
 
@@ -57,4 +59,33 @@ class SmartphonePreprocessor:
         if self.scaler:
             return self.scaler.transform(df)
             
+        return df.values
+
+    def transform_batch(self, df):
+        """
+        Vectorized transformation for a whole DataFrame.
+        """
+        import pandas as pd
+        import numpy as np
+        
+        df = df.copy()
+        
+        # 1. Feature Engineering
+        df['pixel_density'] = df['px_width'] * df['px_height']
+        df['screen_area']   = df['sc_h'] * df['sc_w']
+        
+        # 3. RAM category
+        df['ram_category'] = pd.cut(
+            df['ram'],
+            bins=[0, 1000, 2000, 3000, 4000],
+            labels=[0, 1, 2, 3]
+        ).astype(int)
+        
+        # 4. Exact feature order
+        df = df[self.feature_order]
+        
+        # 5. Scaling
+        self._lazy_load_scaler()
+        if self.scaler:
+            return self.scaler.transform(df)
         return df.values

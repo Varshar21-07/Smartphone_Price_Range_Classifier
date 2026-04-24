@@ -21,6 +21,8 @@ class SmartphoneModel:
                 if os.path.exists(target_path):
                     self.model = tf.keras.models.load_model(target_path, compile=False)
                     print(f"✅ Model loaded successfully.")
+                    import gc
+                    gc.collect()
                 else:
                     print(f"⚠️ Model file not found at {target_path}")
             except Exception as e:
@@ -46,3 +48,23 @@ class SmartphoneModel:
         except Exception as e:
             print(f"❌ Error during inference: {e}")
             return 0, 0.0
+
+    def predict_batch(self, processed_batch):
+        """
+        Runs vectorized inference on a batch of data.
+        """
+        self._lazy_load_model()
+        if self.model is None:
+            return [(0, 0.0)] * len(processed_batch)
+
+        try:
+            predictions = self.model.predict(processed_batch, verbose=0)
+            results = []
+            for pred in predictions:
+                class_id = int(np.argmax(pred))
+                confidence = float(np.max(pred))
+                results.append((class_id, confidence))
+            return results
+        except Exception as e:
+            print(f"❌ Batch inference error: {e}")
+            return [(0, 0.0)] * len(processed_batch)
