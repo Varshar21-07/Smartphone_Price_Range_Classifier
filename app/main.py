@@ -118,12 +118,32 @@ async def predict_batch(file: UploadFile = File(...), db: Session = Depends(sess
         predictions_raw = mod.predict_batch(processed_data_batch)
         
         results = []
+        db_records = []
         for i in range(len(df)):
             predicted_class, confidence = predictions_raw[i]
             results.append({
                 "price_range": predicted_class,
                 "confidence": confidence
             })
+            
+            # Map raw data back for database storage (Subset of core features)
+            row_dict = df.iloc[i].to_dict()
+            db_records.append(models.PredictionRecord(
+                battery_power=int(row_dict.get('battery_power', 0)),
+                ram=int(row_dict.get('ram', 0)),
+                int_memory=int(row_dict.get('int_memory', 0)),
+                predicted_range=predicted_class,
+                confidence=confidence
+            ))
+            
+        # Bulk save to database
+        try:
+            db.add_all(db_records)
+            db.commit()
+            print(f"✅ Successfully recorded {len(db_records)} batch predictions.")
+        except Exception as db_err:
+            print(f"⚠️ Database batch save failed: {db_err}")
+            db.rollback()
         
         # 4. Cleanup
         import gc
