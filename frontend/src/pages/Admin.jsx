@@ -1,8 +1,8 @@
 import React from 'react';
-import { BarChart3, Layers, Info } from 'lucide-react';
+import { BarChart3, Layers, Info, ChevronLeft } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 
-const Admin = ({ metrics }) => {
+const Admin = ({ metrics, onGoHome }) => {
   if (!metrics) {
     return (
       <div className="w-full max-w-4xl px-4 flex justify-center animate-in fade-in">
@@ -27,7 +27,14 @@ const Admin = ({ metrics }) => {
 
   return (
     <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-500 w-full max-w-3xl px-4">
-      <div className="w-full flex items-center gap-3 mb-8 ml-2">
+      <div className="w-full flex items-center gap-3 mb-8 ml-2 relative">
+        <button 
+          onClick={onGoHome}
+          className="absolute -top-4 -left-10 p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-slate-400 hover:text-blue-500 transition-colors shadow-sm active:scale-95"
+          title="Back to Home"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
         <div className="p-2 bg-blue-500/10 rounded-xl">
           <BarChart3 className="w-6 h-6 text-blue-500" />
         </div>

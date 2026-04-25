@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Smartphone, Battery, Camera, Layers, Cpu, ShieldCheck, Info, Wifi, Monitor, Scale, Clock, Phone } from 'lucide-react';
+import { Smartphone, Battery, Camera, Layers, Cpu, ShieldCheck, Info, Wifi, Monitor, Scale, Clock, Phone, ChevronLeft } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 import SpecInput from '../components/SpecInput';
 import { cn } from '../lib/utils';
@@ -34,7 +34,7 @@ const SpecSelect = ({ label, icon: Icon, className, value, onChange, name }) => 
   );
 };
 
-const Predict = ({ onPredict, isLoading }) => {
+const Predict = ({ onPredict, isLoading, onGoHome }) => {
   const [specs, setSpecs] = useState({
     battery_power: '',
     dual_sim: '',
@@ -64,7 +64,14 @@ const Predict = ({ onPredict, isLoading }) => {
   return (
     <div className="flex flex-col items-center animate-in fade-in slide-in-from-right-8 duration-500 w-full max-w-5xl px-4">
       <GlassCard className="w-full flex flex-col items-center gap-8 py-10 px-8 md:px-12 rounded-[2.5rem] bg-white dark:bg-slate-900/60 border-slate-200 dark:border-white/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] dark:shadow-2xl">
-        <div className="flex items-center gap-5 w-full border-b border-slate-100 dark:border-white/10 pb-8">
+        <div className="flex items-center gap-5 w-full border-b border-slate-100 dark:border-white/10 pb-8 relative">
+          <button 
+            onClick={onGoHome}
+            className="absolute -top-4 -left-4 p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-slate-400 hover:text-blue-500 transition-colors shadow-sm active:scale-95"
+            title="Back to Home"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
           <div className="p-4 bg-blue-500/10 rounded-2xl">
              <Cpu className="w-10 h-10 text-blue-500" />
           </div>

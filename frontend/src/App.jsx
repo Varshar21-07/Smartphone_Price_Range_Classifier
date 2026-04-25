@@ -55,7 +55,7 @@ function App() {
           />
         );
       case 'predict':
-        return <Predict onPredict={handlePredict} isLoading={loading} />;
+        return <Predict onPredict={handlePredict} isLoading={loading} onGoHome={() => setPage('landing')} />;
       case 'batch':
         return <BatchPredict onGoHome={() => setPage('landing')} />;
       case 'result':
@@ -68,7 +68,7 @@ function App() {
           />
         );
       case 'admin':
-        return <Admin metrics={metrics} />;
+        return <Admin metrics={metrics} onGoHome={() => setPage('landing')} />;
       default:
         return (
           <Home 

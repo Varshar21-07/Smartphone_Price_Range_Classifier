@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UploadCloud, File, CheckCircle, AlertCircle, RefreshCcw, Home as HomeIcon, Download, ListChecks } from 'lucide-react';
+import { UploadCloud, File, CheckCircle, AlertCircle, RefreshCcw, Home as HomeIcon, Download, ListChecks, ChevronLeft } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 import { predictBatch } from '../services/api';
 
@@ -169,7 +169,14 @@ const BatchPredict = ({ onGoHome }) => {
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col items-center w-full max-w-4xl px-4"
     >
-      <GlassCard className="w-full flex flex-col items-center gap-8 py-12 px-8 rounded-[2rem] bg-white dark:bg-slate-900/60 border-slate-200 dark:border-white/10 shadow-xl">
+      <GlassCard className="w-full flex flex-col items-center gap-8 py-12 px-8 rounded-[2rem] bg-white dark:bg-slate-900/60 border-slate-200 dark:border-white/10 shadow-xl relative">
+        <button 
+          onClick={onGoHome}
+          className="absolute -top-4 -left-4 p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-slate-400 hover:text-blue-500 transition-colors shadow-sm active:scale-95 z-10"
+          title="Back to Home"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
         <div className="text-center">
             <h2 className="text-3xl font-black text-slate-900 dark:text-white font-outfit tracking-tight mb-2">Upload CSV Batch</h2>
             <p className="text-slate-500 dark:text-slate-400 text-sm">Upload a dataset of smartphone specifications to predict their price ranges simultaneously.</p>
